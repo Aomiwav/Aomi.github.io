@@ -76,6 +76,8 @@ radial-gradient(ellipse at 50% 45%,#e0cc9a 28%,#cbb077 76%,#a4854d 100%)}
 select,input,textarea{background:rgba(120,85,40,.12)}
 .book{border-color:#2e1618}
 @media (max-width:760px){.index{box-shadow:inset 0 0 46px rgba(70,35,10,.6)}.entry{box-shadow:inset 0 0 46px rgba(70,35,10,.6)}}
+.ribbon{right:112px}
+#tok{margin-top:2px}
 </style>
 </head>
 <body>
@@ -89,7 +91,9 @@ select,input,textarea{background:rgba(120,85,40,.12)}
 <button class="btn" id="addBtn">Ajouter un sang</button>
 <a class="btn alt" id="dl" href="#">Télécharger data.js</a>
 <button class="btn alt" id="reset">Annuler mes changements</button>
-<p>Mode édition : tes changements restent dans ce navigateur. Télécharge data.js puis remplace-le sur ton hébergement pour les publier.</p>
+<input id="tok" type="password" placeholder="Jeton GitHub (à coller une fois)" aria-label="Jeton GitHub" autocomplete="off">
+<button class="btn" id="pub">Publier sur GitHub</button>
+<p id="pubmsg" role="status">Mode édition : tes changements restent dans ce navigateur tant que tu n’as pas publié.</p>
 </div>
 <div class="filters">
 <input id="q" type="search" placeholder="Chercher un nom" aria-label="Chercher un nom">
@@ -112,7 +116,8 @@ function save(){if(!EDIT)return;try{localStorage.setItem(KEY,JSON.stringify(entr
 function esc(s){var d=document.createElement("div");d.textContent=s==null?"":String(s);return d.innerHTML}
 function sorted(){return entries.slice().sort(function(a,b){return String(a.n).localeCompare(String(b.n),"fr")})}
 function fillSel(sel,key,label){var keep=sel.value,v=[];entries.forEach(function(x){if(x[key]&&v.indexOf(x[key])<0)v.push(x[key])});v.sort();sel.innerHTML="<option value=''>"+label+"</option>"+v.map(function(x){return "<option>"+esc(x)+"</option>"}).join("");sel.value=v.indexOf(keep)<0?"":keep}
-function exportLink(){var t="// Les fiches du grimoire. Remplace ce fichier sur ton hébergement pour publier.\nwindow.GRIMOIRE = "+JSON.stringify(entries,null,1)+";\n";
+function dataText(){return "// Les fiches du grimoire. Remplace ce fichier sur ton hébergement pour publier.\nwindow.GRIMOIRE = "+JSON.stringify(entries,null,1)+";\n"}
+function exportLink(){var t=dataText();
 $("dl").href="data:text/javascript;charset=utf-8,"+encodeURIComponent(t);$("dl").download="data.js"}
 function render(){fillSel($("g"),"g","Tous les groupes");fillSel($("r"),"r","Toutes les raretés");
 $("admin").hidden=!EDIT;if(EDIT)exportLink();
@@ -143,6 +148,25 @@ cur=o.id;editing=null;save();render()}}
 ["q","g","r"].forEach(function(i){$(i).oninput=render});
 $("addBtn").onclick=function(){editing="";cur=null;render()};
 $("reset").onclick=function(){try{localStorage.removeItem(KEY)}catch(e){}entries=(window.GRIMOIRE||[]).slice();cur=null;editing=null;render()};
+
+var OWNER="Aomiwav",REPO="Aomi.github.io",TK="grimoire-jeton";
+try{$("tok").value=localStorage.getItem(TK)||""}catch(e){}
+$("pub").onclick=async function(){
+var t=$("tok").value.trim(),m=$("pubmsg");
+if(!t){m.textContent="Colle d’abord ton jeton GitHub.";return}
+try{localStorage.setItem(TK,t)}catch(e){}
+m.textContent="Publication en cours…";
+var u="https://api.github.com/repos/"+OWNER+"/"+REPO+"/contents/data.js",H={Authorization:"Bearer "+t,Accept:"application/vnd.github+json"};
+try{
+var r=await fetch(u,{headers:H}),sha;
+if(r.ok){sha=(await r.json()).sha}else if(r.status!==404){throw new Error(r.status)}
+var body={message:"Mise à jour du grimoire",content:btoa(unescape(encodeURIComponent(dataText())))};
+if(sha)body.sha=sha;
+var w=await fetch(u,{method:"PUT",headers:Object.assign({"Content-Type":"application/json"},H),body:JSON.stringify(body)});
+if(!w.ok)throw new Error(w.status);
+m.textContent="Publié. Le site se met à jour dans 1 à 2 minutes."
+}catch(e){m.textContent="Échec ("+e.message+"). Vérifie le jeton et ses droits sur le dépôt."}
+};
 window.onhashchange=function(){location.reload()};
 if(entries.length)cur=sorted()[0].id;
 render();
