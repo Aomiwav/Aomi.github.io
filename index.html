@@ -112,7 +112,7 @@ select,input,textarea{background:rgba(120,85,40,.12)}
 <article class="entry" id="entry" aria-live="polite"></article>
 </div>
 </div>
-<script src="data.js"></script>
+<script>document.write('<script src="data.js?t='+Date.now()+'"><\/script>')</script>
 <script>
 var FIELDS=[["n","Nom"],["e","Espèce / rôle"],["g","Groupe sanguin","select"],["r","Rareté","select"],["c","Couleur","color"],["o","Odeur"],["t","Goût"],["s","Note de goût (sur 10)","select"],["f","Effets"],["d","Dangers"],["no","Note perso","area"]];
 var OPTS={g:["A+","A−","B+","B−","AB+","AB−","O+","O−","Inconnu"],r:["Commun","Peu commun","Rare","Très rare","Légendaire"],s:["0","1","2","3","4","5","6","7","8","9","10"]};
