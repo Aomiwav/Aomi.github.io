@@ -1,4 +1,4 @@
-// Les fiches du grimoire. Modifie ce fichier, ou utilise l’éditeur (ouvre le site avec #edit à la fin de l’adresse).
+// Les fiches du grimoire. Remplace ce fichier sur ton hébergement pour publier.
 window.GRIMOIRE = [
  {
   "id": "seiyuri-ruma",
@@ -13,5 +13,19 @@ window.GRIMOIRE = [
   "f": "Inconnu",
   "d": "Nul",
   "no": "Sang sans grand intéret"
+ },
+ {
+  "id": "seiyuri-rumaaaaaaaaaaaaa",
+  "n": "Seiyuri Rumaaaaaaaaaaaaa",
+  "e": "",
+  "g": "",
+  "r": "",
+  "c": "#7a1a1f",
+  "o": "",
+  "t": "",
+  "s": 5,
+  "f": "",
+  "d": "",
+  "no": ""
  }
 ];
