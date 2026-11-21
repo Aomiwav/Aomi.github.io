@@ -5,7 +5,7 @@ window.GRIMOIRE = [
   "n": "Seiyuri Ruma",
   "e": "Humain",
   "g": "Inconnu",
-  "r": "Commun",
+  "r": "Peu commun",
   "c": "#6e1911",
   "o": "Bois brûlé",
   "t": "Épicé, chaud",
