@@ -88,12 +88,18 @@ select,input,textarea{background:rgba(120,85,40,.12)}
 <nav class="index" aria-label="Index">
 <h2 class="idx">Table des sangs</h2><div class="orn" aria-hidden="true">❦</div>
 <div class="admin" id="admin" hidden>
+<div class="admin" id="login" style="margin:0">
+<input id="tok" type="password" placeholder="Jeton GitHub" aria-label="Jeton GitHub" autocomplete="off">
+<button class="btn" id="conn">Se connecter</button>
+</div>
+<div class="admin" id="tools" style="margin:0" hidden>
 <button class="btn" id="addBtn">Ajouter un sang</button>
 <a class="btn alt" id="dl" href="#">Télécharger data.js</a>
 <button class="btn alt" id="reset">Annuler mes changements</button>
-<input id="tok" type="password" placeholder="Jeton GitHub (à coller une fois)" aria-label="Jeton GitHub" autocomplete="off">
 <button class="btn" id="pub">Publier sur GitHub</button>
-<p id="pubmsg" role="status">Mode édition : tes changements restent dans ce navigateur tant que tu n’as pas publié.</p>
+<button class="btn alt" id="out">Se déconnecter</button>
+</div>
+<p id="pubmsg" role="status"></p>
 </div>
 <div class="filters">
 <input id="q" type="search" placeholder="Chercher un nom" aria-label="Chercher un nom">
@@ -110,9 +116,9 @@ select,input,textarea{background:rgba(120,85,40,.12)}
 var FIELDS=[["n","Nom"],["e","Espèce / rôle"],["g","Groupe sanguin","select"],["r","Rareté","select"],["c","Couleur","color"],["o","Odeur"],["t","Goût"],["s","Note de goût (sur 10)","select"],["f","Effets"],["d","Dangers"],["no","Note perso","area"]];
 var OPTS={g:["A+","A−","B+","B−","AB+","AB−","O+","O−","Inconnu"],r:["Commun","Peu commun","Rare","Très rare","Légendaire"],s:["0","1","2","3","4","5","6","7","8","9","10"]};
 var KEY="grimoire-brouillon",$=function(i){return document.getElementById(i)};
-var EDIT=location.hash==="#edit",entries=(window.GRIMOIRE||[]).slice(),cur=null,editing=null,confirmDel=false;
-if(EDIT){try{var d=JSON.parse(localStorage.getItem(KEY)||"null");if(Array.isArray(d))entries=d}catch(e){}}
-function save(){if(!EDIT)return;try{localStorage.setItem(KEY,JSON.stringify(entries))}catch(e){}}
+var CLE="#edit",UNLOCKED=false,TOKEN="",EDIT=location.hash===CLE,entries=(window.GRIMOIRE||[]).slice(),cur=null,editing=null,confirmDel=false;
+
+function save(){if(!UNLOCKED)return;try{localStorage.setItem(KEY,JSON.stringify(entries))}catch(e){}}
 function esc(s){var d=document.createElement("div");d.textContent=s==null?"":String(s);return d.innerHTML}
 function sorted(){return entries.slice().sort(function(a,b){return String(a.n).localeCompare(String(b.n),"fr")})}
 function fillSel(sel,key,label){var keep=sel.value,v=[];entries.forEach(function(x){if(x[key]&&v.indexOf(x[key])<0)v.push(x[key])});v.sort();sel.innerHTML="<option value=''>"+label+"</option>"+v.map(function(x){return "<option>"+esc(x)+"</option>"}).join("");sel.value=v.indexOf(keep)<0?"":keep}
@@ -120,7 +126,7 @@ function dataText(){return "// Les fiches du grimoire. Remplace ce fichier sur t
 function exportLink(){var t=dataText();
 $("dl").href="data:text/javascript;charset=utf-8,"+encodeURIComponent(t);$("dl").download="data.js"}
 function render(){fillSel($("g"),"g","Tous les groupes");fillSel($("r"),"r","Toutes les raretés");
-$("admin").hidden=!EDIT;if(EDIT)exportLink();
+$("admin").hidden=!EDIT;$("login").hidden=UNLOCKED;$("tools").hidden=!UNLOCKED;if(UNLOCKED)exportLink();
 var q=$("q").value.toLowerCase(),g=$("g").value,r=$("r").value,ul=$("list"),n=0;ul.innerHTML="";
 sorted().forEach(function(x){if((q&&String(x.n).toLowerCase().indexOf(q)<0)||(g&&x.g!==g)||(r&&x.r!==r))return;n++;
 var li=document.createElement("li"),b=document.createElement("button");b.innerHTML="<b>"+esc(x.n)+"</b><span>"+esc(x.g)+" · "+esc(x.r)+"</span>";
@@ -130,7 +136,7 @@ if(editing!==null)return form();
 var x=entries.filter(function(e){return e.id===cur})[0];
 if(!x){$("entry").innerHTML="<p class='race'>"+(entries.length?"Choisis un sang dans l’index.":"Aucun sang n’a encore été ajouté.")+"</p>";return}
 var s=Math.max(0,Math.min(10,Number(x.s)||0)),cc=/^#[0-9a-f]{6}$/i.test(x.c)?x.c:"#7a1a1f";
-$("entry").innerHTML="<span class='seal' style='--c:"+cc+"' aria-hidden='true'></span><h2>"+esc(x.n)+"</h2><div class='orn' aria-hidden='true'>❦</div><p class='race'>"+esc(x.e)+"</p><dl><dt>Groupe</dt><dd>"+esc(x.g)+"</dd><dt>Rareté</dt><dd>"+esc(x.r)+"</dd><dt>Couleur</dt><dd><span class='drop' style='--c:"+esc(/^#[0-9a-f]{6}$/i.test(x.c)?x.c:"#7a1a1f")+"'></span></dd><dt>Odeur</dt><dd>"+esc(x.o)+"</dd><dt>Goût</dt><dd>"+esc(x.t)+"</dd><dt>Note de goût</dt><dd><span class='bar'><i style='width:"+s*10+"%'></i></span>"+s+" / 10</dd><dt>Effets</dt><dd>"+esc(x.f)+"</dd><dt>Dangers</dt><dd>"+esc(x.d)+"</dd></dl><p class='note'>"+esc(x.no)+"</p>"+(EDIT?"<div class='actions'><button class='btn alt' id='ed'>Modifier</button><button class='btn alt' id='del'>"+(confirmDel?"Confirmer la suppression":"Supprimer")+"</button></div>":"");
+$("entry").innerHTML="<span class='seal' style='--c:"+cc+"' aria-hidden='true'></span><h2>"+esc(x.n)+"</h2><div class='orn' aria-hidden='true'>❦</div><p class='race'>"+esc(x.e)+"</p><dl><dt>Groupe</dt><dd>"+esc(x.g)+"</dd><dt>Rareté</dt><dd>"+esc(x.r)+"</dd><dt>Couleur</dt><dd><span class='drop' style='--c:"+esc(/^#[0-9a-f]{6}$/i.test(x.c)?x.c:"#7a1a1f")+"'></span></dd><dt>Odeur</dt><dd>"+esc(x.o)+"</dd><dt>Goût</dt><dd>"+esc(x.t)+"</dd><dt>Note de goût</dt><dd><span class='bar'><i style='width:"+s*10+"%'></i></span>"+s+" / 10</dd><dt>Effets</dt><dd>"+esc(x.f)+"</dd><dt>Dangers</dt><dd>"+esc(x.d)+"</dd></dl><p class='note'>"+esc(x.no)+"</p>"+(UNLOCKED?"<div class='actions'><button class='btn alt' id='ed'>Modifier</button><button class='btn alt' id='del'>"+(confirmDel?"Confirmer la suppression":"Supprimer")+"</button></div>":"");
 if($("ed"))$("ed").onclick=function(){editing=x.id;render()};
 if($("del"))$("del").onclick=function(){if(!confirmDel){confirmDel=true;render();return}
 entries=entries.filter(function(e){return e.id!==x.id});cur=null;confirmDel=false;save();render()}}
@@ -150,11 +156,18 @@ $("addBtn").onclick=function(){editing="";cur=null;render()};
 $("reset").onclick=function(){try{localStorage.removeItem(KEY)}catch(e){}entries=(window.GRIMOIRE||[]).slice();cur=null;editing=null;render()};
 
 var OWNER="Aomiwav",REPO="Aomi.github.io",TK="grimoire-jeton";
-try{$("tok").value=localStorage.getItem(TK)||""}catch(e){}
+async function connect(t,silent){var m=$("pubmsg");m.textContent="Vérification…";
+try{var r=await fetch("https://api.github.com/repos/"+OWNER+"/"+REPO,{headers:{Authorization:"Bearer "+t,Accept:"application/vnd.github+json"}});
+var j=r.ok?await r.json():null;
+if(j&&j.permissions&&j.permissions.push){TOKEN=t;UNLOCKED=true;try{localStorage.setItem(TK,t)}catch(e){}
+try{var d=JSON.parse(localStorage.getItem(KEY)||"null");if(Array.isArray(d))entries=d}catch(e){}
+m.textContent="";cur=entries.length?sorted()[0].id:null;render();return}}catch(e){}
+m.textContent=silent?"":"Connexion refusée. Vérifie le jeton."}
+$("conn").onclick=function(){var t=$("tok").value.trim();if(t)connect(t,false)};
+$("out").onclick=function(){UNLOCKED=false;TOKEN="";try{localStorage.removeItem(TK)}catch(e){}$("tok").value="";entries=(window.GRIMOIRE||[]).slice();editing=null;cur=entries.length?sorted()[0].id:null;$("pubmsg").textContent="";render()};
+if(EDIT){var st="";try{st=localStorage.getItem(TK)||""}catch(e){}if(st)connect(st,true)}
 $("pub").onclick=async function(){
-var t=$("tok").value.trim(),m=$("pubmsg");
-if(!t){m.textContent="Colle d’abord ton jeton GitHub.";return}
-try{localStorage.setItem(TK,t)}catch(e){}
+var t=TOKEN,m=$("pubmsg");if(!UNLOCKED||!t)return;
 m.textContent="Publication en cours…";
 var u="https://api.github.com/repos/"+OWNER+"/"+REPO+"/contents/data.js",H={Authorization:"Bearer "+t,Accept:"application/vnd.github+json"};
 try{
