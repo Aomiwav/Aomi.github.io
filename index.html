@@ -79,6 +79,7 @@ select,input,textarea{background:rgba(120,85,40,.12)}
 .ribbon{right:112px}
 #tok{margin-top:2px}
 [hidden]{display:none!important}
+.list em.sp{display:block;font-size:.88rem;color:var(--muted);line-height:1.3}
 </style>
 </head>
 <body>
@@ -130,7 +131,7 @@ function render(){fillSel($("g"),"g","Tous les groupes");fillSel($("r"),"r","Tou
 $("admin").hidden=!EDIT;$("login").hidden=UNLOCKED;$("tools").hidden=!UNLOCKED;if(UNLOCKED)exportLink();
 var q=$("q").value.toLowerCase(),g=$("g").value,r=$("r").value,ul=$("list"),n=0;ul.innerHTML="";
 sorted().forEach(function(x){if((q&&String(x.n).toLowerCase().indexOf(q)<0)||(g&&x.g!==g)||(r&&x.r!==r))return;n++;
-var li=document.createElement("li"),b=document.createElement("button");b.innerHTML="<b>"+esc(x.n)+"</b><span>"+esc(x.g)+" · "+esc(x.r)+"</span>";
+var li=document.createElement("li"),b=document.createElement("button");b.innerHTML="<b>"+esc(x.n)+"</b>"+(x.e?"<em class='sp'>"+esc(x.e)+"</em>":"")+"<span>"+esc(x.g)+" · "+esc(x.r)+"</span>";
 if(x.id===cur)b.setAttribute("aria-current","true");b.onclick=function(){cur=x.id;editing=null;confirmDel=false;render()};li.appendChild(b);ul.appendChild(li)});
 if(!n)ul.innerHTML="<li class='none'>"+(entries.length?"Aucun sang ne correspond. Change un filtre.":"Le grimoire est vide.")+"</li>";
 if(editing!==null)return form();
