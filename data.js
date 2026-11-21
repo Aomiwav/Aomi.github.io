@@ -13,33 +13,5 @@ window.GRIMOIRE = [
   "f": "Inconnu",
   "d": "Nul",
   "no": "Sang sans grand intéret"
- },
- {
-  "id": "seiyuri-rumaaaaaaaaaaaaa",
-  "n": "Seiyuri Rumaaaaaaaaaaaaa",
-  "e": "",
-  "g": "",
-  "r": "",
-  "c": "#7a1a1f",
-  "o": "",
-  "t": "",
-  "s": 5,
-  "f": "",
-  "d": "",
-  "no": ""
- },
- {
-  "id": "azertet",
-  "n": "azertet",
-  "e": "",
-  "g": "",
-  "r": "",
-  "c": "#7a1a1f",
-  "o": "",
-  "t": "",
-  "s": 5,
-  "f": "",
-  "d": "",
-  "no": ""
  }
 ];
