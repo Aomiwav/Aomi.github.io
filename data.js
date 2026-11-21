@@ -13,5 +13,19 @@ window.GRIMOIRE = [
   "f": "Inconnu",
   "d": "Nul",
   "no": "Sang sans grand intéret"
+ },
+ {
+  "id": "araignees",
+  "n": "Araignées",
+  "e": "Araignées",
+  "g": "Inconnu",
+  "r": "Commun",
+  "c": "#5184c8",
+  "o": "Cuivrer et Poussièreux",
+  "t": "Métallique, Froid, Légèrement amer",
+  "s": 1,
+  "f": "Réflexes accrus ou Résistance au poison",
+  "d": "Nul",
+  "no": ""
  }
 ];
