@@ -27,5 +27,19 @@ window.GRIMOIRE = [
   "f": "Réflexes accrus ou Résistance au poison",
   "d": "Nul",
   "no": ""
+ },
+ {
+  "id": "renard",
+  "n": "Renard",
+  "e": "Renard Roux",
+  "g": "Inconnu",
+  "r": "Commun",
+  "c": "#5b1014",
+  "o": "Musc et Feuilles mortes",
+  "t": "Sauvage, finale musquée et epicée",
+  "s": 1,
+  "f": "Odorat aiguisé pendant quelques instant",
+  "d": "Peut transmettre des maladies (rage, parasites)",
+  "no": "Un sang vif qui rend rusé. Mieux vaut le filtrer avant de le boire."
  }
 ];
