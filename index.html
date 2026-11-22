@@ -151,6 +151,12 @@ body{background:radial-gradient(ellipse at 50% 35%,rgba(0,0,0,0) 25%,rgba(0,0,0,
 .curl::before,.curl::after{content:"";position:absolute;inset:0}
 .curl::before{background:linear-gradient(135deg,transparent 50%,rgba(25,10,3,.6) 50%,#b8a06a 64%)}
 .curl::after{background:linear-gradient(135deg,#d9c898 0,#f2e8c8 45%,rgba(70,40,12,.5) 50%,transparent 50%)}
+
+/* --- photo de l'espèce en bas de la page --- */
+.photo{position:relative;clear:both;max-width:340px;margin:28px auto 4px;padding:10px 10px 6px;background:#f2e9d2;box-shadow:0 3px 8px rgba(30,15,5,.5);transform:rotate(-1.5deg)}
+.photo::before{content:"";position:absolute;top:-11px;left:50%;width:74px;height:20px;margin-left:-37px;background:rgba(236,224,178,.62);transform:rotate(-3deg);box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.photo img{display:block;width:100%;height:auto;max-height:300px;object-fit:cover;filter:sepia(.55) contrast(1.05) saturate(.85)}
+.photo figcaption{text-align:center;font-style:italic;color:var(--muted);font-size:.92rem;padding-top:6px}
 </style>
 </head>
 <body>
@@ -211,20 +217,32 @@ if(editing!==null)return form();
 var x=entries.filter(function(e){return e.id===cur})[0];
 if(!x){$("entry").innerHTML="<p class='race'>"+(entries.length?"Choisis un sang dans l’index.":"Aucun sang n’a encore été ajouté.")+"</p>";return}
 var s=Math.max(0,Math.min(10,Number(x.s)||0)),cc=/^#[0-9a-f]{6}$/i.test(x.c)?x.c:"#7a1a1f";
-$("entry").innerHTML="<span class='seal' style='--c:"+cc+"' aria-hidden='true'><span class='tp'>"+SPLAT+"</span></span><h2>"+esc(x.n)+"</h2><div class='orn' aria-hidden='true'>❦</div><p class='race'>"+esc(x.e)+"</p><dl><dt>Groupe</dt><dd>"+esc(x.g)+"</dd><dt>Rareté</dt><dd>"+esc(x.r)+"</dd><dt>Couleur</dt><dd><span class='drop' style='--c:"+esc(/^#[0-9a-f]{6}$/i.test(x.c)?x.c:"#7a1a1f")+"'></span></dd><dt>Odeur</dt><dd>"+esc(x.o)+"</dd><dt>Goût</dt><dd>"+esc(x.t)+"</dd><dt>Note de goût</dt><dd><span class='bar'><i style='width:"+s*10+"%'></i></span>"+s+" / 10</dd><dt>Effets</dt><dd>"+esc(x.f)+"</dd><dt>Dangers</dt><dd>"+esc(x.d)+"</dd></dl><p class='note'>"+esc(x.no)+"</p>"+(UNLOCKED?"<div class='actions'><button class='btn alt' id='ed'>Modifier</button><button class='btn alt' id='del'>"+(confirmDel?"Confirmer la suppression":"Supprimer")+"</button></div>":"");
+$("entry").innerHTML="<span class='seal' style='--c:"+cc+"' aria-hidden='true'><span class='tp'>"+SPLAT+"</span></span><h2>"+esc(x.n)+"</h2><div class='orn' aria-hidden='true'>❦</div><p class='race'>"+esc(x.e)+"</p><dl><dt>Groupe</dt><dd>"+esc(x.g)+"</dd><dt>Rareté</dt><dd>"+esc(x.r)+"</dd><dt>Couleur</dt><dd><span class='drop' style='--c:"+esc(/^#[0-9a-f]{6}$/i.test(x.c)?x.c:"#7a1a1f")+"'></span></dd><dt>Odeur</dt><dd>"+esc(x.o)+"</dd><dt>Goût</dt><dd>"+esc(x.t)+"</dd><dt>Note de goût</dt><dd><span class='bar'><i style='width:"+s*10+"%'></i></span>"+s+" / 10</dd><dt>Effets</dt><dd>"+esc(x.f)+"</dd><dt>Dangers</dt><dd>"+esc(x.d)+"</dd></dl><p class='note'>"+esc(x.no)+"</p>"+photo(x)+(UNLOCKED?"<div class='actions'><button class='btn alt' id='ed'>Modifier</button><button class='btn alt' id='del'>"+(confirmDel?"Confirmer la suppression":"Supprimer")+"</button></div>":"");
 if($("ed"))$("ed").onclick=function(){editing=x.id;render()};
 if($("del"))$("del").onclick=function(){if(!confirmDel){confirmDel=true;render();return}
 entries=entries.filter(function(e){return e.id!==x.id});cur=null;confirmDel=false;save();render()}}
 function slug(s){return String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"sang"}
+var PREV={};
+function qa(s){return esc(s).replace(/'/g,"&#39;").replace(/"/g,"&quot;")}
+function okImg(s){return typeof s==="string"&&/^(images\/|https?:\/\/|data:image\/)/.test(s)}
+function photo(x){if(!okImg(x.img))return"";return "<figure class='photo'><img src='"+qa(PREV[x.img]||x.img)+"' alt='Photo : "+qa(x.n)+"' loading='lazy' onerror='this.parentNode.hidden=true'><figcaption>"+esc(x.e||x.n)+"</figcaption></figure>"}
+function shrink(file,cb){var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var m=900,s=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement("canvas"),g;c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);g=c.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);cb(c.toDataURL("image/jpeg",.82))};im.onerror=function(){cb(null)};im.src=r.result};r.onerror=function(){cb(null)};r.readAsDataURL(file)}
+var IMGUI="<label>Photo de l’espèce<input type='file' name='file' accept='image/*'></label><label>… ou adresse d’une image<input name='url' type='url' placeholder='https://…'></label><div id='prev'></div>";
 function form(){var x=entries.filter(function(e){return e.id===editing})[0]||{s:5,c:"#7a1a1f"};
 var h="<h2>"+(x.id?"Modifier un sang":"Nouveau sang")+"</h2><form id='f'>";
 FIELDS.forEach(function(f){var k=f[0],t=f[2];h+="<label>"+f[1]+(t==="select"?"<select name='"+k+"'>"+OPTS[k].map(function(o){return "<option>"+o+"</option>"}).join("")+"</select>":t==="area"?"<textarea name='"+k+"' rows='3'></textarea>":"<input name='"+k+"' type='"+(t||"text")+"'"+(k==="n"?" required":"")+">")+"</label>"});
-h+="<div class='actions'><button class='btn' type='submit'>Enregistrer</button><button class='btn alt' type='button' id='cx'>Annuler</button></div></form>";
+h+=IMGUI;h+="<div class='actions'><button class='btn' type='submit'>Enregistrer</button><button class='btn alt' type='button' id='cx'>Annuler</button></div></form>";
 $("entry").innerHTML=h;var f=$("f");
 FIELDS.forEach(function(fl){var el=f.elements[fl[0]],v=x[fl[0]]==null?"":String(x[fl[0]]);if(fl[2]==="select"&&v!==""&&OPTS[fl[0]].indexOf(v)<0)el.add(new Option(v,v));el.value=v});
 $("cx").onclick=function(){editing=null;render()};
-f.onsubmit=function(ev){ev.preventDefault();var o={id:x.id};FIELDS.forEach(function(fl){var v=f.elements[fl[0]].value.trim();o[fl[0]]=fl[0]==="s"?Math.max(0,Math.min(10,Number(v)||0)):v});
-if(x.id){entries=entries.map(function(e){return e.id===x.id?o:e})}else{var id=slug(o.n),b=id,i=2;while(entries.some(function(e){return e.id===id}))id=b+"-"+i++;o.id=id;entries.push(o)}
+var pimg=x.img||"";
+function showPrev(){var d=$("prev");d.innerHTML=okImg(pimg)?"<img src='"+qa(PREV[pimg]||pimg)+"' alt='' style='max-width:200px;max-height:140px;display:block;margin:4px 0'><button type='button' class='btn alt' id='rmimg'>Retirer l’image</button>":"";if($("rmimg"))$("rmimg").onclick=function(){pimg="";f.elements.url.value="";f.elements.file.value="";showPrev()}}
+f.elements.url.value=/^https?:/.test(pimg)?pimg:"";
+f.elements.file.onchange=function(){var fl=this.files[0];if(!fl)return;shrink(fl,function(d){if(d){pimg=d;f.elements.url.value="";showPrev()}else{$("pubmsg").textContent="Image illisible."}})};
+f.elements.url.oninput=function(){pimg=this.value.trim();showPrev()};
+showPrev();
+f.onsubmit=function(ev){ev.preventDefault();var o={id:x.id,img:pimg};FIELDS.forEach(function(fl){var v=f.elements[fl[0]].value.trim();o[fl[0]]=fl[0]==="s"?Math.max(0,Math.min(10,Number(v)||0)):v});
+if(!o.img)delete o.img;if(x.id){entries=entries.map(function(e){return e.id===x.id?o:e})}else{var id=slug(o.n),b=id,i=2;while(entries.some(function(e){return e.id===id}))id=b+"-"+i++;o.id=id;entries.push(o)}
 cur=o.id;editing=null;save();render()}}
 ["q","g","r"].forEach(function(i){$(i).oninput=render});
 $("addBtn").onclick=function(){editing="";cur=null;render()};
@@ -246,6 +264,8 @@ var t=TOKEN,m=$("pubmsg");if(!UNLOCKED||!t)return;
 m.textContent="Publication en cours…";
 var u="https://api.github.com/repos/"+OWNER+"/"+REPO+"/contents/data.js",H={Authorization:"Bearer "+t,Accept:"application/vnd.github+json"};
 try{
+for(var i=0;i<entries.length;i++){var e=entries[i];if(e.img&&e.img.indexOf("data:image/")===0){m.textContent="Envoi de l’image "+(i+1)+"…";var nm="images/"+slug(e.n)+"-"+Date.now()+".jpg";var ur=await fetch("https://api.github.com/repos/"+OWNER+"/"+REPO+"/contents/"+nm,{method:"PUT",headers:Object.assign({"Content-Type":"application/json"},H),body:JSON.stringify({message:"Photo : "+e.n,content:e.img.split(",")[1]})});if(!ur.ok)throw new Error(ur.status);PREV[nm]=e.img;e.img=nm}}
+save();
 var r=await fetch(u,{headers:H}),sha;
 if(r.ok){sha=(await r.json()).sha}else if(r.status!==404){throw new Error(r.status)}
 var body={message:"Mise à jour du grimoire",content:btoa(unescape(encodeURIComponent(dataText())))};
