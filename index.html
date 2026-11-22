@@ -131,6 +131,14 @@ background-image:linear-gradient(90deg,rgba(0,0,0,.6),rgba(255,225,180,.14) 45%,
 .seal{width:104px;height:104px;margin:-6px 0 6px 10px;transform:rotate(4deg);filter:drop-shadow(0 2px 2px rgba(30,5,5,.35))}
 .seal svg{display:block;width:104px;height:104px}
 .tape{top:50%;margin-top:-9px;width:64px;height:18px;margin-left:-32px;transform:rotate(-9deg)}
+
+/* --- sang pris sous un morceau de scotch collé sur la page --- */
+.seal{width:132px;height:92px;margin:-2px 0 10px 14px;transform:rotate(-5deg);filter:drop-shadow(1px 3px 2px rgba(35,20,8,.5))}
+.tp{position:absolute;inset:0;overflow:hidden;background:rgba(236,224,178,.42);
+clip-path:polygon(3% 0,97% 0,100% 8%,97% 16%,100% 25%,97% 34%,100% 43%,97% 52%,100% 61%,97% 70%,100% 79%,97% 88%,100% 100%,3% 100%,0 92%,3% 84%,0 75%,3% 66%,0 57%,3% 48%,0 39%,3% 30%,0 21%,3% 12%)}
+.tp svg{position:absolute;display:block;width:190px;height:190px;left:-18px;top:-55px;opacity:.93}
+.tp::after{content:"";position:absolute;inset:0;pointer-events:none;
+background:linear-gradient(115deg,rgba(255,255,255,.42) 0,rgba(255,255,255,0) 26%,rgba(255,255,255,.2) 50%,rgba(255,255,255,0) 68%),linear-gradient(180deg,rgba(255,255,255,.3),transparent 16%,transparent 84%,rgba(70,45,10,.22))}
 </style>
 </head>
 <body>
@@ -191,7 +199,7 @@ if(editing!==null)return form();
 var x=entries.filter(function(e){return e.id===cur})[0];
 if(!x){$("entry").innerHTML="<p class='race'>"+(entries.length?"Choisis un sang dans l’index.":"Aucun sang n’a encore été ajouté.")+"</p>";return}
 var s=Math.max(0,Math.min(10,Number(x.s)||0)),cc=/^#[0-9a-f]{6}$/i.test(x.c)?x.c:"#7a1a1f";
-$("entry").innerHTML="<span class='seal' style='--c:"+cc+"' aria-hidden='true'><i class='tape'></i>"+SPLAT+"</span><h2>"+esc(x.n)+"</h2><div class='orn' aria-hidden='true'>❦</div><p class='race'>"+esc(x.e)+"</p><dl><dt>Groupe</dt><dd>"+esc(x.g)+"</dd><dt>Rareté</dt><dd>"+esc(x.r)+"</dd><dt>Couleur</dt><dd><span class='drop' style='--c:"+esc(/^#[0-9a-f]{6}$/i.test(x.c)?x.c:"#7a1a1f")+"'></span></dd><dt>Odeur</dt><dd>"+esc(x.o)+"</dd><dt>Goût</dt><dd>"+esc(x.t)+"</dd><dt>Note de goût</dt><dd><span class='bar'><i style='width:"+s*10+"%'></i></span>"+s+" / 10</dd><dt>Effets</dt><dd>"+esc(x.f)+"</dd><dt>Dangers</dt><dd>"+esc(x.d)+"</dd></dl><p class='note'>"+esc(x.no)+"</p>"+(UNLOCKED?"<div class='actions'><button class='btn alt' id='ed'>Modifier</button><button class='btn alt' id='del'>"+(confirmDel?"Confirmer la suppression":"Supprimer")+"</button></div>":"");
+$("entry").innerHTML="<span class='seal' style='--c:"+cc+"' aria-hidden='true'><span class='tp'>"+SPLAT+"</span></span><h2>"+esc(x.n)+"</h2><div class='orn' aria-hidden='true'>❦</div><p class='race'>"+esc(x.e)+"</p><dl><dt>Groupe</dt><dd>"+esc(x.g)+"</dd><dt>Rareté</dt><dd>"+esc(x.r)+"</dd><dt>Couleur</dt><dd><span class='drop' style='--c:"+esc(/^#[0-9a-f]{6}$/i.test(x.c)?x.c:"#7a1a1f")+"'></span></dd><dt>Odeur</dt><dd>"+esc(x.o)+"</dd><dt>Goût</dt><dd>"+esc(x.t)+"</dd><dt>Note de goût</dt><dd><span class='bar'><i style='width:"+s*10+"%'></i></span>"+s+" / 10</dd><dt>Effets</dt><dd>"+esc(x.f)+"</dd><dt>Dangers</dt><dd>"+esc(x.d)+"</dd></dl><p class='note'>"+esc(x.no)+"</p>"+(UNLOCKED?"<div class='actions'><button class='btn alt' id='ed'>Modifier</button><button class='btn alt' id='del'>"+(confirmDel?"Confirmer la suppression":"Supprimer")+"</button></div>":"");
 if($("ed"))$("ed").onclick=function(){editing=x.id;render()};
 if($("del"))$("del").onclick=function(){if(!confirmDel){confirmDel=true;render();return}
 entries=entries.filter(function(e){return e.id!==x.id});cur=null;confirmDel=false;save();render()}}
