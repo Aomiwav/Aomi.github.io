@@ -48,7 +48,7 @@ window.GRIMOIRE = [
   "img": "images/jeiyuri-rama-1795378679267.jpg",
   "n": "Jeiyuri Ruma",
   "e": "Humain / Grand Orchestre",
-  "g": "Inconnu",
+  "g": "B+",
   "r": "Rare",
   "c": "#7a1a1f",
   "o": "Bois brûlé",
@@ -57,20 +57,5 @@ window.GRIMOIRE = [
   "f": "Inconnu",
   "d": "Nul",
   "no": "Une Horreur"
- },
- {
-  "id": "jaaro-jiyu",
-  "img": "images/jaaro-jiyu-1795379584191.jpg",
-  "n": "Jaaro Jiyu",
-  "e": "Humain /  Force Spéciale",
-  "g": "O+",
-  "r": "Légendaire",
-  "c": "#dfb620",
-  "o": "De Temple, De Parchemin et De Bois Ciré.",
-  "t": "Chaude, Boisée, un peu Fumée, Très Posée.",
-  "s": 10,
-  "f": "Inconnu",
-  "d": "Nul",
-  "no": "Un délice en bouge"
  }
 ];
