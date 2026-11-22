@@ -41,5 +41,19 @@ window.GRIMOIRE = [
   "f": "Odorat aiguisé pendant quelques instant",
   "d": "Peut transmettre des maladies (rage, parasites)",
   "no": "Un sang vif qui rend rusé. Mieux vaut le filtrer avant de le boire."
+ },
+ {
+  "id": "jeiyuri-rama",
+  "n": "Jeiyuri Rama",
+  "e": "Humain / Grand Orchestre",
+  "g": "Inconnu",
+  "r": "Rare",
+  "c": "#7a1a1f",
+  "o": "Bois brûlé",
+  "t": "Épicé, chaud",
+  "s": 0,
+  "f": "Inconnu",
+  "d": "Nul",
+  "no": "Une Horreur"
  }
 ];
