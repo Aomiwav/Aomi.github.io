@@ -46,7 +46,7 @@ window.GRIMOIRE = [
  {
   "id": "jeiyuri-rama",
   "img": "images/jeiyuri-rama-1795378679267.jpg",
-  "n": "Jeiyuri Rama",
+  "n": "Jeiyuri Ruma",
   "e": "Humain / Grand Orchestre",
   "g": "Inconnu",
   "r": "Rare",
@@ -62,7 +62,7 @@ window.GRIMOIRE = [
   "id": "jaaro-jiyu",
   "img": "images/jaaro-jiyu-1795379584191.jpg",
   "n": "Jaaro Jiyu",
-  "e": "Humain /  Tetsukage",
+  "e": "Humain /  Force Spéciale",
   "g": "O+",
   "r": "Légendaire",
   "c": "#dfb620",
