@@ -30,6 +30,7 @@ window.GRIMOIRE = [
  },
  {
   "id": "renard",
+  "img": "images/renard-1795378677942.jpg",
   "n": "Renard",
   "e": "Renard Roux",
   "g": "Inconnu",
@@ -44,6 +45,7 @@ window.GRIMOIRE = [
  },
  {
   "id": "jeiyuri-rama",
+  "img": "images/jeiyuri-rama-1795378679267.jpg",
   "n": "Jeiyuri Rama",
   "e": "Humain / Grand Orchestre",
   "g": "Inconnu",
